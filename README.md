@@ -14,8 +14,10 @@ Use this script to assemble one large *snapshot* of your minecraft dynmap.
 Capture a snapshot from the commandline
 1. Download dynmap-snapshotter
 
+2. Install dependencies<br/>
+    `pip install pillow`
 
-2. Run the script<br/>
+3. Run the script<br/>
     EITHER in interactive mode<br/>
     `python dynmap-snapshotter.py --interactive`
     
@@ -23,7 +25,7 @@ Capture a snapshot from the commandline
     `python dynmap-snapshotter.py --folder plugins/dynmap/web/tiles --world world --map flat`
 
 
-3. Enjoy your snapshot <br/>
+4. Enjoy your snapshot <br/>
 	Find your snapshot in the `snapshots` folder where `dynmap-snapshotter.py` was saved
 
 
@@ -39,26 +41,13 @@ Use crontab to setup daily snapshots
     ```
     remeber to set your own arguments and flags
 
-### **Posting to discord**
-Enable posting to discord via a webhook
-
-1. Enable webhook integration in channel settings
-
-2. Copy your webhook url
-
-3. Add arguments when running the script<br/>
-    
-    `python dynmap-snapshotter.py ... --discord-webhook-url [webhook url]`
-    
-    you may also set the `--discord-message` argument to provide a custom message
-    
 ### **All arguments**
 This is the help message for the script
 ```
 > python dynmap-snapshotter.py --help
 
 usage: dynmap-snapshotter.py [-h] [--folder FOLDER] [--world WORLD] [--map MAP] [--interactive] [--scale SCALE] [--fixed-tile-size FIXED_TILE_SIZE]
-                           [--color-hex COLOR_HEX] [--discord-message DISCORD_MESSAGE] [--discord-webhook-url DISCORD_WEBHOOK_URL]
+                           [--color-hex COLOR_HEX] 
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -71,11 +60,6 @@ optional arguments:
                         resize the snapshot with setting a new tile size
   --color-hex COLOR_HEX
                         hex value of color to apply to background.
-  --discord-message DISCORD_MESSAGE
-                        message to go along with discord post snapshot
-  --discord-webhook-url DISCORD_WEBHOOK_URL
-                        discord webhook url to post snapshot to.
-
 ```
 
 

@@ -3,12 +3,6 @@ import random
 import argparse
 import datetime
 from PIL import Image, ImageColor
-try:
-    import discord
-    is_discord_available = True
-except ImportError:
-    is_discord_available = False
-
 
 def get_all_tile_coords_from_dir(tiles_dir, world_name, map_name):
     """ get all tile coordinates from tiles directory """
@@ -36,7 +30,7 @@ class Tile:
 def load_tile_image_from_dir(tile, tiles_dir, world_name, map_name):
     """ load tile image from tiles directory """
     x, z = tile.coords
-    tile_path = pathlib.Path(tiles_dir).joinpath(world_name, map_name, f'{x >> 5}_{z >> 5}/{x}_{z}.jpg')
+    tile_path = pathlib.Path(tiles_dir).joinpath(world_name, map_name, f'{x >> 5}_{z >> 5}/{x}_{z}.png')
     tile.image = Image.open(tile_path)
 
 
@@ -168,18 +162,6 @@ def save_snapshot(snapshot, world_name, map_name):
 
     return output_path
 
-
-def post_to_discord_webhook(snapshot_path, url, message):
-    """ post snapshot to discord channel via a webhook """
-    # get webhook object
-    webhook_id, webhook_token = url.split("/")[-2:]
-    webhook = discord.Webhook.partial(webhook_id, webhook_token, adapter=discord.RequestsWebhookAdapter())
-
-    # post snapshot to discord
-    with open(file=snapshot_path, mode='rb') as f:
-        webhook.send(message, username='dynmap-snapshots', file=discord.File(f))
-
-
 def get_world_names(tiles_dir):
     """ returns a list of dynmap world names"""
     excluded_names = ['_markers_', 'faces', '.vscode', '.git']
@@ -295,8 +277,6 @@ if __name__ == '__main__':
     parser.add_argument('--scale', action="store", default=None, type=float, help="resize the snapshot by a decimal point number")
     parser.add_argument('--fixed-tile-size', action="store", default=None, type=int, help="resize the snapshot by setting a new tile size")
     parser.add_argument('--color-hex', action="store", default=None, type=str, help="hex value of color to apply to background.")
-    parser.add_argument('--discord-message', action='store', default=None, type=str, help="message to go along with discord post snapshot")
-    parser.add_argument('--discord-webhook-url', action='store', default=None, type=str, help="discord webhook url to post snapshot to.")
     args = parser.parse_args()
 
     if args.interactive:
@@ -306,17 +286,8 @@ if __name__ == '__main__':
         if not (args.folder and args.world and args.map):
             parser.error('--folder, --world and --map are required arguments when not using --interactive')
 
-        # parser error if discord is not installed
-        if args.discord_webhook_url and not is_discord_available:
-            parser.error('"discord" python package is required to post to discord webhook. please do "pip install discord".')
-            exit()
-
         # capture and save snapshot
         snapshot = create_snapshot(args.folder, args.world, args.map, args.scale, args.fixed_tile_size, args.color_hex)
         snapshot_path = save_snapshot(snapshot, args.world, args.map)
         print(f'snapshot created. output saved to:\n{snapshot_path}')
 
-        # send to discord
-        if args.discord_webhook_url:
-            print('posting to discord ...')
-            post_to_discord_webhook(snapshot_path, args.discord_webhook_url, args.discord_message)
