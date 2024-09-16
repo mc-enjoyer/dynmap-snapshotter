@@ -1,4 +1,4 @@
-# dynmap-snapshotter
+# dynmap-snapshotter fork used by alfheim.pw
 Use this script to assemble one large *snapshot* of your minecraft dynmap.
 
 
