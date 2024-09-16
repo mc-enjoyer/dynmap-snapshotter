@@ -5,3 +5,4 @@ ROADMAP:
  - progressbars
  - print time of execution
  - show dimentions of output before processing in interactive mode
+ - fix discord webhook integration
